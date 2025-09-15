@@ -2,8 +2,8 @@ import React from "react";
 
 interface ResultsDisplayProps {
   results: {
-    outputs: Record<string, string>;
-    metrics: Record<string, { avg_similarity: number; length_tokens: number }> & { latency: number };
+    outputs: Record<string, any>;
+    metrics: Record<string, any>;
   };
 }
 
@@ -27,7 +27,7 @@ export default function ResultsDisplay({ results }: ResultsDisplayProps) {
         </h2>
         <div className="metrics">
           <div className="metric-item">
-            <strong>Total Latency:</strong> {metrics.latency.toFixed(2)}s
+            <strong>Total Latency:</strong> {metrics.latency ? metrics.latency.toFixed(2) : '0.00'}s
           </div>
           <div className="metric-item">
             <strong>Models Compared:</strong> {modelNames.length}
@@ -49,18 +49,27 @@ export default function ResultsDisplay({ results }: ResultsDisplayProps) {
               </div>
               
               <div className="metrics mb-4">
-                <div className="metric-item">
-                  <strong>Tokens:</strong> {metrics[modelId]?.length_tokens || 0}
-                </div>
-                {metrics[modelId] && (
+                {metrics[modelId]?.length_tokens !== undefined && (
+                  <div className="metric-item">
+                    <strong>Tokens:</strong> {metrics[modelId].length_tokens}
+                  </div>
+                )}
+                {metrics[modelId]?.avg_similarity !== undefined && (
                   <div className="metric-item">
                     <strong>Similarity:</strong> {(metrics[modelId].avg_similarity * 100).toFixed(1)}%
+                  </div>
+                )}
+                {Object.keys(metrics).length > 0 && !metrics[modelId] && (
+                  <div className="metric-item text-gray-500">
+                    <em>Metrics pending...</em>
                   </div>
                 )}
               </div>
 
               <div className="result-content">
-                {outputs[modelId]}
+                {typeof outputs[modelId] === 'string' 
+                  ? outputs[modelId] 
+                  : outputs[modelId]?.response || JSON.stringify(outputs[modelId])}
               </div>
             </div>
           );
