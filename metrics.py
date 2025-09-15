@@ -15,8 +15,10 @@ def evaluate_outputs(outputs: dict) -> dict:
         for j in range(len(keys)):
             if i != j:
                 similarities.append(float(cosine_matrix[i][j]))
+        
+        avg_similarity = sum(similarities) / len(similarities) if len(similarities) > 0 else 0.0
         scores[keys[i]] = {
-            "avg_similarity": sum(similarities) / len(similarities),
+            "avg_similarity": avg_similarity,
             "length_tokens": len(values[i].split())
         }
 
