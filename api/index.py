@@ -17,9 +17,9 @@ app = FastAPI()
 # Enable CORS for Vercel deployment
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # In production, specify your domain
+    allow_origins=["*"] if os.getenv("NODE_ENV") != "production" else ["https://*.vercel.app", "https://promptsmith.vercel.app"],
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["*"],
 )
 
@@ -50,7 +50,5 @@ async def health_check():
     return {"status": "healthy"}
 
 # For Vercel serverless functions
-def handler(request, context):
-    from mangum import Mangum
-    asgi_handler = Mangum(app)
-    return asgi_handler(request, context)
+from mangum import Mangum
+handler = Mangum(app)

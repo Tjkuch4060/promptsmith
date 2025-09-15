@@ -9,7 +9,10 @@ load_dotenv()
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 HF_API_KEY = os.getenv("HF_API_KEY")
 
-client = AsyncOpenAI(api_key=OPENAI_API_KEY)
+# Initialize OpenAI client only if API key is available
+client = None
+if OPENAI_API_KEY:
+    client = AsyncOpenAI(api_key=OPENAI_API_KEY)
 
 OPENAI_MODELS = {"gpt-4", "gpt-3.5-turbo"}
 HF_MODELS = {
@@ -35,6 +38,9 @@ async def run_prompt_across_models(request):
     return {model: output for model, output in results}
 
 async def run_openai_model(prompt, inputs, model, params):
+    if not client:
+        raise ValueError("OpenAI API key not configured")
+        
     # Convert double braces {{var}} to single braces {var} for Python formatting
     rendered_prompt = prompt
     if inputs:
@@ -50,6 +56,9 @@ async def run_openai_model(prompt, inputs, model, params):
     return model, response.choices[0].message.content
 
 async def run_hf_model(prompt, inputs, model, params):
+    if not HF_API_KEY:
+        raise ValueError("Hugging Face API key not configured")
+        
     # Convert double braces {{var}} to single braces {var} for Python formatting
     rendered_prompt = prompt
     if inputs:
