@@ -7,7 +7,7 @@ import { runPromptRequest } from "../lib/api";
 
 export default function Home() {
   const [prompt, setPrompt] = useState("Rewrite this paragraph to be more persuasive: {{text}}");
-  const [inputs, setInputs] = useState({ text: "This product might help people lose weight." });
+  const [inputs, setInputs] = useState<Record<string, string>>({ text: "This product might help people lose weight." });
   const [selectedModels, setSelectedModels] = useState(["gpt-3.5-turbo"]);
   const [results, setResults] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
