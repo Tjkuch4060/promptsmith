@@ -1,8 +1,12 @@
 import axios from "axios";
 
 export async function runPromptRequest(payload) {
+  const apiUrl = process.env.NODE_ENV === 'production' 
+    ? '/api/run-prompt'  // Use relative path in production (Vercel)
+    : 'http://localhost:8000/run-prompt'; // Use localhost in development
+  
   try {
-    const res = await axios.post("http://localhost:8000/run-prompt", payload, {
+    const res = await axios.post(apiUrl, payload, {
       headers: {
         'Content-Type': 'application/json',
       },

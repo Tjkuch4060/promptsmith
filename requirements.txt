@@ -4,3 +4,4 @@ openai
 aiohttp
 sentence-transformers
 python-dotenv
+mangum
